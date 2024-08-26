@@ -8,6 +8,7 @@ FROM alpine:3.20
 
 WORKDIR /app
 COPY --from=builder /app/main /app/
+COPY --from=builder /app/cmd /app/cmd
 EXPOSE 8080
 
-CMD [ "main" ]
+CMD [ "/app/main" ]
