@@ -43,19 +43,19 @@
                 method: 'POST',
             }
 
-            fetch("http\/\/:localhost:8081", body)
+            fetch("http:\/\/localhost:8081", body)
             .then((response) => response.json())
             .then((data) => {
-                payload.innerHtml = "empty POST request";
-                received.innerHtml = JSON.stringify(data, undefiend, 4);
+                payload.innerHTML = "empty POST request";
+                received.innerHTML = JSON.stringify(data, null, 4);
                 if (data.error) {
                     console.log(data.massege);
                 } else {
-                    output.innerHtml += `<br><strong>Response from broker service</strong>: ${data.message}</br>`
+                    output.innerHTML += `<br><strong>Response from broker service</strong>: ${data.massage}</br>`
                 }
             })
             .catch((error) => {
-                output.innerHtml += "<br><br>Error: " + error;
+                output.innerHTML += "<br><br>Error: " + error;
             })
 
         })
