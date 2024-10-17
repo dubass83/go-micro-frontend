@@ -6,6 +6,17 @@
             <div class="col">
                 <h1 class="mt-5">Test microservices</h1>
                 <hr>
+                    <form>
+                      <div class="row">
+                        <div class="col">
+                          <input type="text" class="form-control" placeholder="Email" id="email">
+                        </div>
+                        <div class="col">
+                          <input type="password" class="form-control" placeholder="Password" id="password">
+                        </div>
+                      </div>
+                    </form>
+                <hr>
                     <a id="brokerBtn" class="btn btn-outline-secondary" href="javascript:void(0);"> Test Broker </a>
                     <a id="authBrokerBtn" class="btn btn-outline-secondary" href="javascript:void(0);"> Test authBroker </a>
 
@@ -42,11 +53,14 @@
 
         authBrokerBtn.addEventListener("click", function(){
 
+            let email = document.getElementById("email");
+            let password = document.getElementById("password");
+
             const payload = {
                 action: "auth",
                 auth: {
-                  email: "admin@example.com",
-                  password: "verysecret",
+                  email: email.value, // "admin@example.com",
+                  password: password.value, // "verysecret",
                 }
             }
 
@@ -73,7 +87,9 @@
             .catch((error) => {
                 output.innerHTML += "<br><br>Error: " + error;
             })
-
+            // clear input field
+            email.value = '';
+            password.value = '';
         })
 
         brokerBtn.addEventListener("click", function(){
