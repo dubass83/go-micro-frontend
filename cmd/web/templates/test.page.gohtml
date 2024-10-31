@@ -16,9 +16,20 @@
                         </div>
                       </div>
                     </form>
+                    <form>
+                      <div class="row">
+                        <div class="col">
+                          <input type="text" class="form-control" placeholder="Name" id="logName">
+                        </div>
+                        <div class="col">
+                          <input type="text" class="form-control" placeholder="Log message" id="logMessage">
+                        </div>
+                      </div>
+                    </form>
                 <hr>
                     <a id="brokerBtn" class="btn btn-outline-secondary" href="javascript:void(0);"> Test Broker </a>
                     <a id="authBrokerBtn" class="btn btn-outline-secondary" href="javascript:void(0);"> Test authBroker </a>
+                    <a id="loggerBrokerBtn" class="btn btn-outline-secondary" href="javascript:void(0);"> Test loggerBroker </a>
 
                 <div id="output" class="mt-5" style="outline: 1px solid silver; padding: 2em;">
                     <span class="text-muted">Output shows here...</span>
@@ -47,6 +58,7 @@
 
         let brokerBtn = document.getElementById("brokerBtn");
         let authBrokerBtn = document.getElementById("authBrokerBtn");
+        let loggerBrokerBtn = document.getElementById("loggerBrokerBtn")
         let output = document.getElementById("output");
         let sent = document.getElementById("payload");
         let received = document.getElementById("received");
@@ -90,6 +102,47 @@
             // clear input field
             email.value = '';
             password.value = '';
+        })
+
+        loggerBrokerBtn.addEventListener("click", function(){
+
+            let logName = document.getElementById("logName");
+            let logMessage = document.getElementById("logMessage");
+
+            const payload = {
+                action: "logger",
+                log: {
+                  name: logName.value,         
+                  logMessage: logMessage.value,
+                }
+            }
+
+            const headers = new Headers();
+            headers.append("Content-type", "application/json");
+
+            const body = {
+              method: 'POST',
+              body: JSON.stringify(payload),
+              headers: headers,
+            }
+
+            fetch("http:\/\/localhost:8081/handle", body)
+            .then((response) => response.json())
+            .then((data) => {
+                sent.innerHTML = JSON.stringify(payload, null, 4);
+                received.innerHTML = JSON.stringify(data, null, 4);
+                if (data.error) {
+                    output.innerHTML += `<br><strong>Error</strong>: ${data.massage}</br>`;
+                } else {
+                    output.innerHTML += `<br><strong>Response from logger service</strong>: ${data.massage}</br>`;
+                }
+            })
+            .catch((error) => {
+                output.innerHTML += "<br><br>Error: " + error;
+            })
+            // clear input field
+            logName.value = '';
+            logMessage.value = '';
         })
 
         brokerBtn.addEventListener("click", function(){
