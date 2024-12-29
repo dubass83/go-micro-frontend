@@ -30,7 +30,20 @@
                       </div>
                     </form>
                 <br>
-                    <a id="loggerBrokerBtn" class="btn btn-secondary btn-lg btn-block" href="javascript:void(0);"> Test loggerBroker </a>
+                    <a id="loggerBrokerBtn" class="btn btn-secondary btn-lg btn-block" href="javascript:void(0);"> Test logger Broker </a>
+                <hr>
+                    <form>
+                      <div class="row">
+                        <div class="col">
+                          <input type="text" class="form-control" placeholder="Name" id="logGName">
+                        </div>
+                        <div class="col">
+                          <input type="text" class="form-control" placeholder="Log message" id="logGMessage">
+                        </div>
+                      </div>
+                    </form>
+                <br>
+                    <a id="loggerGBrokerBtn" class="btn btn-secondary btn-lg btn-block" href="javascript:void(0);"> Test logger Broker via gRPC </a>
                 <hr>
                     <form>
                       <div class="row">
@@ -78,6 +91,7 @@
         let brokerBtn = document.getElementById("brokerBtn");
         let authBrokerBtn = document.getElementById("authBrokerBtn");
         let loggerBrokerBtn = document.getElementById("loggerBrokerBtn")
+        let loggerGBrokerBtn = document.getElementById("loggerGBrokerBtn")
         let output = document.getElementById("output");
         let sent = document.getElementById("payload");
         let received = document.getElementById("received");
@@ -191,6 +205,47 @@
             }
 
             fetch("http:\/\/localhost:8081/handle", body)
+            .then((response) => response.json())
+            .then((data) => {
+                sent.innerHTML = JSON.stringify(payload, null, 4);
+                received.innerHTML = JSON.stringify(data, null, 4);
+                if (data.error) {
+                    output.innerHTML += `<br><strong>Error</strong>: ${data.massage}</br>`;
+                } else {
+                    output.innerHTML += `<br><strong>Response from logger service</strong>: ${data.massage}</br>`;
+                }
+            })
+            .catch((error) => {
+                output.innerHTML += "<br><br>Error: " + error;
+            })
+            // clear input field
+            logName.value = '';
+            logMessage.value = '';
+        })
+
+        loggerGBrokerBtn.addEventListener("click", function(){
+
+            let logName = document.getElementById("logGName");
+            let logMessage = document.getElementById("logGMessage");
+
+            const payload = {
+                action: "logger",
+                log: {
+                  name: logName.value,         
+                  data: logMessage.value,
+                }
+            }
+
+            const headers = new Headers();
+            headers.append("Content-type", "application/json");
+
+            const body = {
+              method: 'POST',
+              body: JSON.stringify(payload),
+              headers: headers,
+            }
+
+            fetch("http:\/\/localhost:8081/log-grpc", body)
             .then((response) => response.json())
             .then((data) => {
                 sent.innerHTML = JSON.stringify(payload, null, 4);
